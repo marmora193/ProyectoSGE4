@@ -160,6 +160,69 @@ class TasacionService:
 
         return detalle
 
+    @staticmethod
+    def obtener_resumen_tasaciones():
+        tasaciones = session.query(Tasacion).all()
+        resumen = []
+
+        for t in tasaciones:
+            resumen.append({
+                "id": t.id,
+                "dni": t.usuario.dni,
+                "peso": float(t.peso_gramos),
+                "valor": float(t.valor),
+                "importe": float(t.importe)
+            })
+        return resumen
+
+    @staticmethod
+    def obtener_estadisticas_tasaciones():
+        datos = TasacionService.listar_tasaciones()
+
+        if not datos:
+            print("No hay tasaciones registradas.")
+            return None
+
+        total = len(datos)
+        peso_total = sum(t["peso"] for t in datos)
+        importe_total = sum(t["importe"] for t in datos)
+        precio_medio = round(importe_total / total, 2)
+
+        mayor = max(datos, key=lambda x: x["importe"])
+        menor = min(datos, key=lambda x: x["importe"])
+
+        # Agrupar por usuario (usamos DNI)
+        agrupado = {}
+        for t in datos:
+            dni = t["dni"]
+            if dni not in agrupado:
+                agrupado[dni] = 0
+            agrupado[dni] += t["importe"]
+
+        print("\n===== RESUMEN DE TASACIONES =====")
+        print(f"Total de tasaciones: {total}")
+        print(f"Peso total tasado: {peso_total} g")
+        print(f"Importe total generado: {importe_total} €")
+        print(f"Precio medio por tasación: {precio_medio} €")
+
+        print(f"\nMayor tasación → {mayor['importe']} € (ID {mayor['id']}, DNI {mayor['dni']})")
+        print(f"Menor tasación → {menor['importe']} € (ID {menor['id']}, DNI {menor['dni']})")
+
+        print("\nImporte total por usuario:")
+        for dni, valor in agrupado.items():
+            print(f" - {dni}: {valor} €")
+
+        print("=====================================\n")
+
+        return {
+            "total": total,
+            "peso_total": peso_total,
+            "importe_total": importe_total,
+            "precio_medio": precio_medio,
+            "mayor": mayor,
+            "menor": menor,
+            "agrupado": agrupado
+        }
 
 
 class VentaService:
