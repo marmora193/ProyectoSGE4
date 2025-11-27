@@ -34,3 +34,9 @@ CREATE TABLE venta (
     gramos NUMERIC(10,2) NOT NULL
 );
 
+--Insertamos estados
+INSERT INTO estado (descripcion) VALUES
+('TASACION'),
+('ACEPTADA'),
+('RECHAZADA');
+
