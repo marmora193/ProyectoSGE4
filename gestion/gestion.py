@@ -5,6 +5,7 @@ from db.config import session
 from db.models.models import Venta, Usuario, Tasacion, Estado
 
 
+
 class Gestion:
     @staticmethod
     def ventas_por_mes():
@@ -22,13 +23,8 @@ class Gestion:
         else:
             fin = fecha.replace(month=fecha.month + 1, day=1)
 
-        ventas = (
-            session.query(Venta)
-            .join(Tasacion, Venta.id_tasacion == Tasacion.id)
-            .filter(Tasacion.fecha >= inicio)
-            .filter(Tasacion.fecha < fin)
-            .all()
-        )
+        ventas = (session.query(Venta).join(Tasacion, Venta.id_tasacion == Tasacion.id).filter(Tasacion.fecha >= inicio)
+                  .filter(Tasacion.fecha < fin).all())
 
         if ventas:
             print(f"\nVentas del mes {mes}:")
@@ -171,6 +167,7 @@ class Graficos:
         print(f"Gráfico guardado en: {ruta}")
 
         plt.show()
+        plt.close()
 
     @staticmethod
     def importe_por_cliente():
@@ -205,6 +202,7 @@ class Graficos:
         print(f"Gráfico guardado en: {ruta}")
 
         plt.show()
+        plt.close()
 
     @staticmethod
     def tasaciones_por_estado():
@@ -212,6 +210,7 @@ class Graficos:
         tasaciones_ids = [t.id for t in session.query(Tasacion).all()]
         ventas_ids = [v.id_tasacion for v in session.query(Venta).all()]
 
+        #Contamos las tasaciones que no tienen una venta asociada
         pendientes = len([t_id for t_id in tasaciones_ids if t_id not in ventas_ids])
 
         aceptadas = session.query(Venta).filter_by(estado_id=2).count()
@@ -230,14 +229,11 @@ class Graficos:
         print(f"Gráfico guardado en: {ruta}")
 
         plt.show()
+        plt.close()
 
     @staticmethod
     def ventas_por_mes():
-        ventas = (
-            session.query(Venta)
-            .join(Tasacion, Venta.id_tasacion == Tasacion.id)
-            .all()
-        )
+        ventas = (session.query(Venta).join(Tasacion, Venta.id_tasacion == Tasacion.id).all())
 
         if not ventas:
             print("No hay ventas registradas.")
@@ -253,7 +249,7 @@ class Graficos:
                 conteo_mensual[mes] = 0
             conteo_mensual[mes] += 1
 
-        meses = list(conteo_mensual.keys())
+        meses = sorted(list(conteo_mensual.keys()))
         cantidades = list(conteo_mensual.values())
 
         plt.figure(figsize=(10, 6))
@@ -268,3 +264,4 @@ class Graficos:
         print(f"Gráfico guardado en: {ruta}")
 
         plt.show()
+        plt.close()

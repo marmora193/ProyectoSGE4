@@ -1,5 +1,6 @@
-from datetime import date, datetime
-
+from datetime import datetime
+from db.factory.factory import cargar_datos_iniciales
+from log.log import registrar
 from services.services import UsuarioService, TasacionService, VentaService
 from gestion.gestion import Gestion, Graficos
 
@@ -17,6 +18,8 @@ def menu():
         print("0. Salir")
 
         opcion = input("Selecciona una opción: ")
+
+        registrar(f"El usuario seleccionó la opción {opcion} en el menú principal")
 
         if opcion == "1":
             menu_usuarios()
@@ -43,10 +46,12 @@ def menu_usuarios ():
         print("4. Dar de baja usuario")
         print("0. Volver")
 
-        opc = input("Dime qué quieres hacer: ")
+        opcion = input("Dime qué quieres hacer: ")
+
+        registrar(f"Entró en menú usuarios y seleccionó {opcion}")
 
         #1. Crear un nuevo usuario
-        if opc == "1":
+        if opcion == "1":
             try:
                 nombre = input("Nombre: ")
                 apellidos = input("Apellidos: ")
@@ -71,14 +76,14 @@ def menu_usuarios ():
 
 
         #2. Listar todos los usuarios
-        elif opc == "2":
+        elif opcion == "2":
             usuarios = UsuarioService.listar_usuarios()
             print("\nUsuario: \n")
             for usuario in usuarios:
                 print(f"Nombre: {usuario.nombre}, Apellidos: {usuario.apellidos}, DNI: {usuario.dni}\n")
 
         #3. Buscar usuario por DNI
-        elif opc == "3":
+        elif opcion == "3":
             dni = input("Introduce el DNI del usuario: ")
             usuario = UsuarioService.buscar_por_dni(dni)
 
@@ -88,7 +93,7 @@ def menu_usuarios ():
                 print("No existe un usuario con ese DNI, por favor, introduce uno válido.")
 
         #4. Dar de baja usuario
-        elif opc == "4":
+        elif opcion == "4":
             dni = input("Introduce el dni del usuario a dar de baja: ")
             usuario = UsuarioService.dar_baja(dni)
 
@@ -97,7 +102,7 @@ def menu_usuarios ():
             else:
                 print(f"No existe un usuario con ese DNI.")
 
-        elif opc == 0:
+        elif opcion == 0:
             print("Volviendo al menú principal...")
             break
 
@@ -114,6 +119,8 @@ def menu_tasaciones():
         print("0. Volver")
 
         opcion = int(input("Selecciona una opción: "))
+
+        registrar(f"Entró en menú tasaciones y seleccionó {opcion}")
 
         #1. Crear tasación
         if opcion == 1:
@@ -178,6 +185,8 @@ def menu_ventas():
 
         opcion = input("Selecciona una opción: ")
 
+        registrar(f"Entró en menú ventas y seleccionó {opcion}")
+
         #1. Aceptar tasación
         if opcion == "1":
             try:
@@ -226,21 +235,23 @@ def menu_estadisticas():
         print("6. Clientes sin ventas en 3 meses")
         print("0. Volver")
 
-        opc = input("Opción: ")
+        opcion = input("Opción: ")
 
-        if opc == "1":
+        registrar(f"Entró en menú usuarios y seleccionó {opcion}")
+
+        if opcion == "1":
             TasacionService.obtener_estadisticas_tasaciones()
-        elif opc == "2":
+        elif opcion == "2":
             Gestion.ventas_por_mes()
-        elif opc == "3":
+        elif opcion == "3":
             Gestion.ventas_por_cliente()
-        elif opc == "4":
+        elif opcion == "4":
             Gestion.tasaciones_no_aceptadas()
-        elif opc == "5":
+        elif opcion == "5":
             Gestion.cliente_con_mas_ventas()
-        elif opc == "6":
+        elif opcion == "6":
             Gestion.clientes_inactivos_3_meses()
-        elif opc == "0":
+        elif opcion == "0":
             break
         else:
             print("Opción no válida.")
@@ -250,14 +261,17 @@ def menu_graficos():
         print("\n--- Menú de Gráficos ---")
         print("1. Oro vendido por cliente (gramos)")
         print("2. Importe total vendido por cliente (€)")
-        print("3. Tasaciones por estado (pie chart)")
+        print("3. Tasaciones por estado")
         print("4. Ventas por mes")
         print("0. Volver")
 
         opcion = input("Selecciona una opción: ")
 
+        registrar(f"Entró en menú usuarios y seleccionó {opcion}")
+
         if opcion == "1":
             Graficos.oro_por_cliente()
+            input("\nPulsa ENTER para volver al menú...")
 
         elif opcion == "2":
             Graficos.importe_por_cliente()
@@ -276,4 +290,5 @@ def menu_graficos():
 
 
 if __name__ == '__main__':
+    cargar_datos_iniciales()
     menu()
