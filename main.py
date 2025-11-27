@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from services.services import UsuarioService, TasacionService, VentaService
-from gestion.gestion import Gestion
+from gestion.gestion import Gestion, Graficos
 
 
 def menu():
@@ -27,7 +27,7 @@ def menu():
         elif opcion == "4":
             menu_estadisticas()
         elif opcion == "5":
-            print("Gráficos: ")
+            menu_graficos()
         elif opcion == "0":
             print("¡Hasta pronto!")
             break
@@ -244,6 +244,35 @@ def menu_estadisticas():
             break
         else:
             print("Opción no válida.")
+
+def menu_graficos():
+    while True:
+        print("\n--- Menú de Gráficos ---")
+        print("1. Oro vendido por cliente (gramos)")
+        print("2. Importe total vendido por cliente (€)")
+        print("3. Tasaciones por estado (pie chart)")
+        print("4. Ventas por mes")
+        print("0. Volver")
+
+        opcion = input("Selecciona una opción: ")
+
+        if opcion == "1":
+            Graficos.oro_por_cliente()
+
+        elif opcion == "2":
+            Graficos.importe_por_cliente()
+
+        elif opcion == "3":
+            Graficos.tasaciones_por_estado()
+
+        elif opcion == "4":
+            Graficos.ventas_por_mes()
+
+        elif opcion == "0":
+            break
+
+        else:
+            print("Opción no válida. Inténtalo de nuevo.")
 
 
 if __name__ == '__main__':
